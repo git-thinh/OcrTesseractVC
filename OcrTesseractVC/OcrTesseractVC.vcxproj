@@ -72,14 +72,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\vclib\tesseract_x86-windows\include\tesseract;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\vclib\tesseract_x86-windows\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\vclib\tesseract_x86-windows\include\tesseract;C:\vclib\restbed_x86-windows\include\corvusoft\restbed;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\vclib\tesseract_x86-windows\debug\lib;C:\vclib\restbed_x86-windows\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\vclib\tesseract_x86-windows\include\tesseract;C:\vclib\restbed_x86-windows\include\corvusoft\restbed;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\vclib\tesseract_x86-windows\lib;C:\vclib\restbed_x86-windows\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -97,7 +99,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tesseract41d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tesseract41d.lib;restbed.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,6 +132,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>tesseract41.lib;restbed.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

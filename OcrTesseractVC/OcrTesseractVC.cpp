@@ -1,10 +1,12 @@
 #include <iostream>
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+#include <memory>
+#include <cstdlib>
+#include <restbed>
 
-#include "httplib.h"
-using namespace httplib;
-
+//using namespace std;
+using namespace restbed;
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <tesseract/baseapi.h>
@@ -155,6 +157,8 @@ int tcp_client_SendText(string text, char* s_ip_address, char* s_port)
 		printf("Client: WSACleanup() is OK...\n");
 	return 0;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,7 +319,15 @@ int test_box_BoundingBox_001(const char* file) {
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-string line_get_XYWH(string language, string fileName) {
+bool replace___(std::string& str, const std::string& from, const std::string& to) {
+	size_t start_pos = str.find(from);
+	if (start_pos == std::string::npos)
+		return false;
+	str.replace(start_pos, from.length(), to);
+	return true;
+}
+
+string line_get_XYWH(string language, string fileName, bool hasText) {
 	Pix* image = pixRead(fileName.c_str());
 
 	tesseract::TessBaseAPI* api = new tesseract::TessBaseAPI();
@@ -343,7 +355,15 @@ string line_get_XYWH(string language, string fileName) {
 
 		//fprintf(stdout, "\nBox[%d]: x=%d, y=%d, w=%d, h=%d\n", i, box->x, box->y, box->w, box->h);
 
-		text += "[" + std::to_string(i) + "," + std::to_string(box->x) + "," + std::to_string(box->y) + "," + std::to_string(box->w) + "," + std::to_string(box->h) + "]";
+		if (hasText) {
+			/*api->SetRectangle(box->x, box->y, box->w, box->h);
+			const char* ocrResult = api->GetUTF8Text();
+			text += "[\"" + std::to_string(i) + "\",\"" + std::to_string(box->x) + "\",\"" + std::to_string(box->y) + "\",\"" + std::to_string(box->w) + "\",\"" + std::to_string(box->h) + "\",\"" + ocrResult + "\"]";
+			delete[] ocrResult;*/
+		}
+		else
+			text += "[" + std::to_string(i) + "," + std::to_string(box->x) + "," + std::to_string(box->y) + "," + std::to_string(box->w) + "," + std::to_string(box->h) + "]";
+
 		if (i == len - 1)
 			text += "\n";
 		else
@@ -354,17 +374,17 @@ string line_get_XYWH(string language, string fileName) {
 
 	text += "\n]";
 
-	std::cout << text;
+	//std::cout << text;
 
 	// Destroy used object and release memory
 	api->End();
 	delete api;
 	pixDestroy(&image);
-	
+
 	return text;
 }
 
-string word_get_X1Y1X2Y2(string language, string fileName) {
+string word_get_X1Y1X2Y2(string language, string fileName, bool hasText) {
 	Pix* image = pixRead(fileName.c_str());
 
 	tesseract::TessBaseAPI* api = new tesseract::TessBaseAPI();
@@ -377,33 +397,51 @@ string word_get_X1Y1X2Y2(string language, string fileName) {
 
 	api->SetImage(image);
 
-	Boxa* boxes = api->GetComponentImages(tesseract::RIL_TEXTLINE, true, NULL, NULL);
-	//printf("\nFound %d textline image components.\n", boxes->n);
-
 	string text = "[\n";
-	int len = boxes->n;
-	for (int i = 0; i < len; i++) {
-		BOX* box = boxaGetBox(boxes, i, L_CLONE);
-		//api->SetRectangle(box->x, box->y, box->w, box->h);
-		//int conf = api->MeanTextConf();		
-		//const char* ocrResult = api->GetUTF8Text();
-		//fprintf(stdout, "Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s", i, box->x, box->y, box->w, box->h, conf, ocrResult);
-		//delete[] ocrResult;
 
-		//fprintf(stdout, "\nBox[%d]: x=%d, y=%d, w=%d, h=%d\n", i, box->x, box->y, box->w, box->h);
+	api->Recognize(0);
+	tesseract::ResultIterator* ri = api->GetIterator();
+	tesseract::PageIteratorLevel level = tesseract::RIL_WORD;
+	if (ri != 0) {
+		int k = 0;
+		do {
+			int x1, y1, x2, y2;
+			ri->BoundingBox(level, &x1, &y1, &x2, &y2);
 
-		text += "[" + std::to_string(i) + "," + std::to_string(box->x) + "," + std::to_string(box->y) + "," + std::to_string(box->w) + "," + std::to_string(box->h) + "]";
-		if (i == len - 1)
-			text += "\n";
-		else
-			text += ",\n";
+			//float conf = ri->Confidence(level);
+			//const char* word = ri->GetUTF8Text(level); 
+			//printf("word: '%s';  \tconf: %.2f; BoundingBox: %d,%d,%d,%d;\n", word, conf, x1, y1, x2, y2);
+			//delete[] word;
+			//printf("conf: %.2f; BoundingBox: %d,%d,%d,%d;\n", conf, x1, y1, x2, y2);
 
-		boxDestroy(&box);
+			if (k == 0) {
+				if (hasText) {
+					const char* word = ri->GetUTF8Text(level);
+					text += "[\"" + to_string(k) + "\",\"" + to_string(x1) + "\",\"" + to_string(y1) + "\",\"" + to_string(x2) + "\",\"" + to_string(y2) + "\",\"" + word + "\"]";
+					delete[] word;
+				}
+				else
+					text += "[" + to_string(k) + "," + to_string(x1) + "," + to_string(y1) + "," + to_string(x2) + "," + to_string(y2) + "]";
+			}
+			else {
+				if (hasText) {
+					const char* word = ri->GetUTF8Text(level);
+					text = text + "," + "[\"" + to_string(k) + "\",\"" + to_string(x1) + "\",\"" + to_string(y1) + "\",\"" + to_string(x2) + "\",\"" + to_string(y2) + "\",\"" + word + "\"]";
+					delete[] word;
+				}
+				else
+					text = text + "," + "[" + to_string(k) + "," + to_string(x1) + "," + to_string(y1) + "," + to_string(x2) + "," + to_string(y2) + "]";
+			}
+
+			k++;
+		} while (ri->Next(level));
+
+		//text = replace(text, "][", "],[");
 	}
 
 	text += "\n]";
 
-	std::cout << text;
+	//std::cout << text;
 
 	// Destroy used object and release memory
 	api->End();
@@ -415,50 +453,70 @@ string word_get_X1Y1X2Y2(string language, string fileName) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
+
+void post_method_handler(const shared_ptr< Session > session)
+{
+	const auto request = session->get_request();
+
+	int content_length = request->get_header("Content-Length", 0);
+
+	session->fetch(content_length, [](const shared_ptr< Session > session, const Bytes& body)
+		{
+			fprintf(stdout, "%.*s\n", (int)body.size(), body.data());
+			session->close(OK, "Hello, World!", { { "Content-Length", "13" } });
+		});
+}
+
+void get_method_handler(const shared_ptr< Session > session)
+{
+	string file = session->get_request()->get_query_parameter("file", "");
+	string lang = session->get_request()->get_query_parameter("lang", "eng");
+
+	file = "C:\\ocr-images\\" + file;
+	string text = line_get_XYWH(lang, file, false);
+
+	session->close(OK, text, { { "Content-Length", to_string(text.length()) }, { "Content-Type", "application/json" } });
+}
+
+string json_format(string text) {
+	/*text = replace___(text, "\n", "^");
+	text = replace___(text, "\\", "~");*/
+	return text;
+}
+
+std::wstring s2ws(const std::string& s)
+{
+	int len;
+	int slength = (int)s.length() + 1;
+	len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+	std::wstring r(buf);
+	delete[] buf;
+	return r;
+}
 
 void httpServer_Start() {
+	string ip = "127.0.0.1";
+	//ip = "192.168.10.54";
+	int port = 54321;	
 
-	Server svr;
+	std::wstring stemp = s2ws("OCR " + ip + ":" + to_string(port));
+	LPCWSTR result = stemp.c_str();
+	SetConsoleTitle(result);
 
-	svr.Get("/", [](const Request& req, Response& res) {
-		res.set_content("Ok", "text/plain");
-		});
-	svr.Get(R"(/numbers/(\d+))", [&](const Request& req, Response& res) {
-		auto numbers = req.matches[1];
-		res.set_content(numbers, "text/plain");
-		});
-	svr.Get("/stop", [&](const Request& req, Response& res) {
-		svr.stop();
-		});
+	auto resource = make_shared< Resource >();
+	resource->set_path("/");
+	resource->set_method_handler("GET", get_method_handler);
 
-	//====================================================================================
+	auto settings = make_shared<Settings>();
+	settings->set_port(port);
+	settings->set_bind_address(ip);
+	settings->set_default_header("Connection", "close");
 
-	svr.Get("/api/ocr/line-xywh/(.*)/(.*)", [](const Request& req, Response& res) {
-		string lang = req.matches[1];
-		string file = req.matches[2];
-		file = "C:\\ocr-images\\" + file;
-		string text = line_get_XYWH("eng", file);
-		res.set_content(text, "application/json");
-		});
-
-	svr.Get("/api/ocr/word-x1y1x2y2/(.*)/(.*)", [](const Request& req, Response& res) {
-		string lang = req.matches[1];
-		string file = req.matches[2];
-		file = "C:\\ocr-images\\" + file;
-		string text = line_get_XYWH("eng", file);
-		res.set_content(text, "application/json");
-		});
-
-	//====================================================================================
-
-	//svr.listen("localhost", 1234); 
-	int port = svr.bind_to_any_port("127.0.0.1");
-
-	wchar_t buffer[9];
-	wsprintfW(buffer, L"OCR.%d", port);
-	SetConsoleTitle(buffer);
-
-	svr.listen_after_bind();
+	Service service;
+	service.publish(resource);
+	service.start(settings);
 }
 
 int main()
@@ -472,8 +530,7 @@ int main()
 	//string text = line_get_XYWH(p_file);
 
 	httpServer_Start();
-	
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 
