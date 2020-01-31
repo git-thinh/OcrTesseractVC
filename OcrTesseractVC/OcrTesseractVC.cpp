@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 #include <memory>
@@ -496,10 +497,21 @@ std::wstring s2ws(const std::string& s)
 	return r;
 }
 
-void httpServer_Start() {
+void httpServer_Start(int argc, char** argv) {
 	string ip = "127.0.0.1";
 	//ip = "192.168.10.54";
 	int port = 54321;	
+
+	//std::cout << "22222Have " << argc << " arguments:" << std::endl;
+	for (int i = 0; i < argc; ++i) {
+		//std::cout << argv[i] << std::endl;
+		if (i == 1) {
+			long arg = strtol(argv[i], NULL, 10);
+			port = (int)arg;
+
+			std::cout << "PORT = " << port << std::endl;
+		}
+	}
 
 	std::wstring stemp = s2ws("OCR " + ip + ":" + to_string(port));
 	LPCWSTR result = stemp.c_str();
@@ -519,8 +531,9 @@ void httpServer_Start() {
 	service.start(settings);
 }
 
-int main()
+int main(int argc, char** argv)
 {
+
 	//test_GetUTF8Text_001(p_file); // Ok
 	//test_GetUTF8Text_002(p_file); // Error
 
@@ -529,7 +542,7 @@ int main()
 
 	//string text = line_get_XYWH(p_file);
 
-	httpServer_Start();
+	httpServer_Start(argc, argv);
 	return EXIT_SUCCESS;
 }
 
