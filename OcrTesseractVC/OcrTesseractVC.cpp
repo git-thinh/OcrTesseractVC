@@ -8,12 +8,10 @@
 
 using namespace tesseract;
 
-class TessAPI : public TessBaseAPI {
-public:
-	void PrintRects(int len);
-};
+class TessAPI : public TessBaseAPI { public: void PrintRects(int len); };
 
-const char* p_file = "C:\\Git\\OCR\\OCR_Accord.Tesseract\\data-test\\text\\phototest.tif";
+//const char* p_file = "C:\\Git\\OCR\\OCR_Accord.Tesseract\\data-test\\text\\phototest.tif";
+const char* p_file = "C:\\ocr-images\\1.1.jpg";
 
 int test_GetUTF8Text_001(const char* file) {
 
@@ -81,10 +79,81 @@ int test_GetUTF8Text_002(const char* file) {
 	return 0;
 }
 
+int test_box_GetComponentImages_001(const char* file) {
+	Pix* image = pixRead(file);
+
+	tesseract::TessBaseAPI* api = new tesseract::TessBaseAPI();
+	//api->Init(NULL, "eng");
+	// Initialize tesseract-ocr with English, without specifying tessdata path
+	if (api->Init(NULL, "eng")) {
+		fprintf(stderr, "Could not initialize tesseract.\n");
+		exit(1);
+	}
+
+	api->SetImage(image);
+
+	Boxa* boxes = api->GetComponentImages(tesseract::RIL_TEXTLINE, true, NULL, NULL);
+	printf("Found %d textline image components.\n", boxes->n);
+	for (int i = 0; i < boxes->n; i++) {
+		BOX* box = boxaGetBox(boxes, i, L_CLONE);
+		api->SetRectangle(box->x, box->y, box->w, box->h);
+		char* ocrResult = api->GetUTF8Text();
+		int conf = api->MeanTextConf();
+		fprintf(stdout, "Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s",
+			i, box->x, box->y, box->w, box->h, conf, ocrResult);
+		boxDestroy(&box);
+	}
+
+	// Destroy used object and release memory
+	api->End();
+	delete api;
+	pixDestroy(&image);
+
+	return 0;
+}
+
+int test_box_BoundingBox_001(const char* file) {
+	Pix* image = pixRead(file);
+
+	tesseract::TessBaseAPI* api = new tesseract::TessBaseAPI();
+	//api->Init(NULL, "eng");
+	// Initialize tesseract-ocr with English, without specifying tessdata path
+	if (api->Init(NULL, "eng")) {
+		fprintf(stderr, "Could not initialize tesseract.\n");
+		exit(1);
+	}
+
+	api->SetImage(image);
+	api->Recognize(0);
+	tesseract::ResultIterator* ri = api->GetIterator();
+	tesseract::PageIteratorLevel level = tesseract::RIL_WORD;
+	if (ri != 0) {
+		do {
+			float conf = ri->Confidence(level);
+			int x1, y1, x2, y2;
+			ri->BoundingBox(level, &x1, &y1, &x2, &y2);
+			//const char* word = ri->GetUTF8Text(level); 
+			//printf("word: '%s';  \tconf: %.2f; BoundingBox: %d,%d,%d,%d;\n", word, conf, x1, y1, x2, y2);
+			//delete[] word;
+			printf("conf: %.2f; BoundingBox: %d,%d,%d,%d;\n", conf, x1, y1, x2, y2);
+		} while (ri->Next(level));
+	}
+
+	// Destroy used object and release memory
+	api->End();
+	delete api;
+	pixDestroy(&image);
+
+	return 0;
+}
+
 int main()
 {
-	test_GetUTF8Text_001(p_file);
-	//test_GetUTF8Text_002(p_file); //error
+	//test_GetUTF8Text_001(p_file); // Ok
+	//test_GetUTF8Text_002(p_file); // Error
+
+	test_box_GetComponentImages_001(p_file); // Ok
+	//test_box_BoundingBox_001(p_file); // Ok
 
 	return 0;
 }
