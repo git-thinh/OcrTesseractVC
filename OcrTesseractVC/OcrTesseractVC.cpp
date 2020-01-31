@@ -5,6 +5,7 @@
 
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
+using namespace std;
 
 using namespace tesseract;
 
@@ -93,16 +94,32 @@ int test_box_GetComponentImages_001(const char* file) {
 	api->SetImage(image);
 
 	Boxa* boxes = api->GetComponentImages(tesseract::RIL_TEXTLINE, true, NULL, NULL);
-	printf("Found %d textline image components.\n", boxes->n);
-	for (int i = 0; i < boxes->n; i++) {
+	//printf("\nFound %d textline image components.\n", boxes->n);
+
+	string text = "[\n";
+	int len = boxes->n;
+	for (int i = 0; i < len; i++) {
 		BOX* box = boxaGetBox(boxes, i, L_CLONE);
-		api->SetRectangle(box->x, box->y, box->w, box->h);
-		char* ocrResult = api->GetUTF8Text();
-		int conf = api->MeanTextConf();
-		fprintf(stdout, "Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s",
-			i, box->x, box->y, box->w, box->h, conf, ocrResult);
+		//api->SetRectangle(box->x, box->y, box->w, box->h);
+		//int conf = api->MeanTextConf();		
+		//const char* ocrResult = api->GetUTF8Text();
+		//fprintf(stdout, "Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s", i, box->x, box->y, box->w, box->h, conf, ocrResult);
+		//delete[] ocrResult;
+
+		//fprintf(stdout, "\nBox[%d]: x=%d, y=%d, w=%d, h=%d\n", i, box->x, box->y, box->w, box->h);
+
+		text += "[" + std::to_string(i) + "," + std::to_string(box->x) + "," + std::to_string(box->y) + "," + std::to_string(box->w) + "," + std::to_string(box->h) + "]";
+		if (i == len - 1) 
+			text += "\n";
+		else
+			text += ",\n";
+
 		boxDestroy(&box);
 	}
+	
+	text += "\n]";
+
+	std::cout << text;
 
 	// Destroy used object and release memory
 	api->End();
