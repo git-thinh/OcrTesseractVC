@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\vclib\tesseract_x86-windows\include\tesseract;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\vclib\tesseract_x86-windows\debug\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\vclib\tesseract_x86-windows\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>

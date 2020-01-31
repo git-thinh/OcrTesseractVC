@@ -47,15 +47,15 @@ int test_GetUTF8Text_001(const char* file) {
 }
 
 int test_GetUTF8Text_002(const char* file) {
-	Pix* image = pixRead(file);
-	const unsigned char* data;
-	int w0;
-	int h0;
-	int bytes_per_pixel;
-	int stride; // bytes_per_line;
+	//Pix* image = pixRead(file);
+	//const unsigned char* data;
+	//int w0;
+	//int h0;
+	//int bytes_per_pixel;
+	//int stride; // bytes_per_line;
 
-	int x0;
-	int y0;
+	//int x0;
+	//int y0;
 
 	////TessAPI* api = new TessAPI();
 	////int res = api->Init(NULL, "rus");
