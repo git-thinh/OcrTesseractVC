@@ -57,11 +57,11 @@ int test_GetUTF8Text_002(const char* file) {
 	int x0;
 	int y0;
 
-	TessAPI* api = new TessAPI();
-	int res = api->Init(NULL, "rus");
-	//api->SetAccuracyVSpeed(AVS_MOST_ACCURATE);
-	api->SetImage(data, w0, h0, bytes_per_pixel, stride);
-	api->SetRectangle(x0, y0, w0, h0);
+	////TessAPI* api = new TessAPI();
+	////int res = api->Init(NULL, "rus");
+	//////api->SetAccuracyVSpeed(AVS_MOST_ACCURATE);
+	////api->SetImage(data, w0, h0, bytes_per_pixel, stride);
+	////api->SetRectangle(x0, y0, w0, h0);
 
 	/////*char* text;
 	////ETEXT_DESC monitor;
@@ -76,7 +76,7 @@ int test_GetUTF8Text_002(const char* file) {
 	text = api->GetUTF8Text();
 	printf("text: %s\n", text);*/
 
-	api->End();
+	////api->End();
 
 	return 0;
 }

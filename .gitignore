@@ -1,2 +1,4 @@
 /.vs
 /OcrTesseractVC/Debug
+/Debug/*.pdb
+/Debug/OcrTesseractVC.ilk
