@@ -340,6 +340,7 @@ string line_get_XYWH(string language, string fileName, bool hasText) {
 	}
 
 	api->SetImage(image);
+	api->SetVariable("lstm_choice_mode", "2");
 
 	Boxa* boxes = api->GetComponentImages(tesseract::RIL_TEXTLINE, true, NULL, NULL);
 	//printf("\nFound %d textline image components.\n", boxes->n);

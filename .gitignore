@@ -2,3 +2,8 @@
 /OcrTesseractVC/Debug
 /Debug/*.pdb
 /Debug/OcrTesseractVC.ilk
+/opencv_changing_contrast_brightness_image/linear_transform_correction.png
+/opencv_changing_contrast_brightness_image/Debug
+/opencv_changing_contrast_brightness_image/gamma_correction.png
+/opencv_threshold_convert2gray/Debug
+/Debug/*.ilk

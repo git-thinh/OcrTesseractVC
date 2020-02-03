@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OcrTesseractVC", "OcrTesseractVC\OcrTesseractVC.vcxproj", "{50B57F0C-90D0-4ABB-A0F2-65FF9501268C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_changing_contrast_brightness_image", "opencv_changing_contrast_brightness_image\opencv_changing_contrast_brightness_image.vcxproj", "{FB1361E3-1151-4150-99B9-8F78D7FF0FA7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_threshold_convert2gray", "opencv_threshold_convert2gray\opencv_threshold_convert2gray.vcxproj", "{FFC53CC6-1289-432C-B069-74AAF4EDA657}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenCV", "OpenCV", "{4E1BCA91-E8DD-418A-85D1-3F74567E0BDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,9 +27,29 @@ Global
 		{50B57F0C-90D0-4ABB-A0F2-65FF9501268C}.Release|x64.Build.0 = Release|x64
 		{50B57F0C-90D0-4ABB-A0F2-65FF9501268C}.Release|x86.ActiveCfg = Release|Win32
 		{50B57F0C-90D0-4ABB-A0F2-65FF9501268C}.Release|x86.Build.0 = Release|Win32
+		{FB1361E3-1151-4150-99B9-8F78D7FF0FA7}.Debug|x64.ActiveCfg = Debug|x64
+		{FB1361E3-1151-4150-99B9-8F78D7FF0FA7}.Debug|x64.Build.0 = Debug|x64
+		{FB1361E3-1151-4150-99B9-8F78D7FF0FA7}.Debug|x86.ActiveCfg = Debug|Win32
+		{FB1361E3-1151-4150-99B9-8F78D7FF0FA7}.Debug|x86.Build.0 = Debug|Win32
+		{FB1361E3-1151-4150-99B9-8F78D7FF0FA7}.Release|x64.ActiveCfg = Release|x64
+		{FB1361E3-1151-4150-99B9-8F78D7FF0FA7}.Release|x64.Build.0 = Release|x64
+		{FB1361E3-1151-4150-99B9-8F78D7FF0FA7}.Release|x86.ActiveCfg = Release|Win32
+		{FB1361E3-1151-4150-99B9-8F78D7FF0FA7}.Release|x86.Build.0 = Release|Win32
+		{FFC53CC6-1289-432C-B069-74AAF4EDA657}.Debug|x64.ActiveCfg = Debug|x64
+		{FFC53CC6-1289-432C-B069-74AAF4EDA657}.Debug|x64.Build.0 = Debug|x64
+		{FFC53CC6-1289-432C-B069-74AAF4EDA657}.Debug|x86.ActiveCfg = Debug|Win32
+		{FFC53CC6-1289-432C-B069-74AAF4EDA657}.Debug|x86.Build.0 = Debug|Win32
+		{FFC53CC6-1289-432C-B069-74AAF4EDA657}.Release|x64.ActiveCfg = Release|x64
+		{FFC53CC6-1289-432C-B069-74AAF4EDA657}.Release|x64.Build.0 = Release|x64
+		{FFC53CC6-1289-432C-B069-74AAF4EDA657}.Release|x86.ActiveCfg = Release|Win32
+		{FFC53CC6-1289-432C-B069-74AAF4EDA657}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FB1361E3-1151-4150-99B9-8F78D7FF0FA7} = {4E1BCA91-E8DD-418A-85D1-3F74567E0BDD}
+		{FFC53CC6-1289-432C-B069-74AAF4EDA657} = {4E1BCA91-E8DD-418A-85D1-3F74567E0BDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1C1C4FC7-053E-4639-B3CB-44F3497FA9FD}
