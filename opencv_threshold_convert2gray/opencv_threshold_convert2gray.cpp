@@ -26,7 +26,8 @@ static void Threshold_Demo(int, void*)
 }
 
 
-const char* p_file = "C:\\ocr-images\\1.1.jpg";
+//const char* p_file = "C:\\ocr-images\\1.1.jpg";
+const char* p_file = "C:\\ocr-images\\1.jpg";
 
 int main(int argc, char** argv)
 {

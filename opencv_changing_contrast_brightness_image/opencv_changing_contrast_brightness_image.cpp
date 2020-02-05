@@ -61,7 +61,10 @@ namespace
         gammaCorrection(img_original, gamma_value);
     }
 }
+
 const char* p_file = "C:\\ocr-images\\1.1.jpg";
+//const char* p_file = "C:\\ocr-images\\1.jpg";
+
 int main(int argc, char** argv)
 {
     //CommandLineParser parser(argc, argv, "{@input | lena.jpg | input image}");
